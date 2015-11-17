@@ -9,9 +9,9 @@ function preload() {
     // game.load.image('door_open','assets/door_open.png');
     // game.load.image('key','assets/keyYellow.png');    
 
-    // game.load.image('cloud1','assets/cloud1.png');    
-    // game.load.image('cloud2','assets/cloud2.png');    
-    // game.load.image('cloud3','assets/cloud3.png');    
+    game.load.image('cloud1','assets/cloud1.png');    
+    game.load.image('cloud2','assets/cloud2.png');    
+    game.load.image('cloud3','assets/cloud3.png');    
 
     game.load.spritesheet('player_walk', 'assets/walk.png', 66, 92, 13);
 
@@ -28,7 +28,7 @@ var jumpTimer = 0;
 var isJumping = false;
 
 //background
-// var bg;
+var bg;
 
 //objects
 // var door_closed;
@@ -43,7 +43,7 @@ var isJumping = false;
 // var best = 0;
 
 //clouds
-// var clouds = [];
+var clouds = [];
 
 
 
@@ -53,8 +53,8 @@ function create() {
     initializePhysics();    
     initializeIO();
 
-    // createBackground();
-    // createClouds();
+    createBackground();
+    createClouds();
     initializeTerrain();
     // createObjects();
     createPlayer();
@@ -164,39 +164,39 @@ function createPlayer() {
 //     hasKey.scale.setTo(0.5, 0.5);
 // }
 
-// function createBackground() {
+function createBackground() {
 
-//     var bgBitmap = game.add.bitmapData(game.width, game.height);
+    var bgBitmap = game.add.bitmapData(game.width, game.height);
 
-//     var grd=bgBitmap.context.createLinearGradient(0,0,0,500);
-//     grd.addColorStop(0,"#EF5091");
-//     grd.addColorStop(1,"white");
-//     bgBitmap.context.fillStyle=grd;
-//     bgBitmap.context.fillRect(0,0,this.game.width, this.game.height);
+    var grd=bgBitmap.context.createLinearGradient(0,0,0,500);
+    grd.addColorStop(0,"#EF5091");
+    grd.addColorStop(1,"white");
+    bgBitmap.context.fillStyle=grd;
+    bgBitmap.context.fillRect(0,0,this.game.width, this.game.height);
 
-//     var bg = game.add.sprite(0, 0, bgBitmap);
-//     bg.fixedToCamera = true;
-// }
+    var bg = game.add.sprite(0, 0, bgBitmap);
+    bg.fixedToCamera = true;
+}
 
 
-// function rand(a, b) {
-//     var d = b-a+1;
-//     return Math.floor(Math.random()*d)+a;
-// }
+function rand(a, b) {
+    var d = b-a+1;
+    return Math.floor(Math.random()*d)+a;
+}
 
-// function createClouds() {
-//     var count = rand(3,10);
-//     for(var i = 0; i <  count; i++) {
-//         var type = rand(1,3);
-//         var cx = rand(0, game.width*3);
-//         var cy = rand(0, game.height/3);
-//         var c = game.add.sprite(cx, cy, 'cloud'+type);
-//         c.fixedToCamera = true;
-//         c.parallax = Math.floor(i/2);
-//         c.x1 = cx;
-//         clouds.push(c);
-//     }
-// }
+function createClouds() {
+    var count = rand(3,10);
+    for(var i = 0; i <  count; i++) {
+        var type = rand(1,3);
+        var cx = rand(0, game.width*3);
+        var cy = rand(0, game.height/3);
+        var c = game.add.sprite(cx, cy, 'cloud'+type);
+        c.fixedToCamera = true;
+        c.parallax = Math.floor(i/2);
+        c.x1 = cx;
+        clouds.push(c);
+    }
+}
 
 // function reset() {
 //     player.x = 320;
@@ -216,9 +216,9 @@ function update() {
     game.physics.arcade.collide(player, terrainLayer);
     
     // cloud parallax
-    // for(var i=0; i<clouds.length; i++){
-    //     clouds[i].cameraOffset.x = clouds[i].x1 - 50 * game.camera.x / game.width * clouds[i].parallax;
-    // }
+    for(var i=0; i<clouds.length; i++){
+        clouds[i].cameraOffset.x = clouds[i].x1 - 50 * game.camera.x / game.width * clouds[i].parallax;
+    }
 
     // // object interactions
     // if(game.physics.arcade.intersects(player, key) && key.visible === true) {
