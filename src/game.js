@@ -5,9 +5,9 @@ function preload() {
     game.load.image('base_tile_img', 'assets/sprites.png');
 
 
-    // game.load.image('door_closed','assets/door_closed.png');
-    // game.load.image('door_open','assets/door_open.png');
-    // game.load.image('key','assets/keyYellow.png');    
+    game.load.image('door_closed','assets/door_closed.png');
+    game.load.image('door_open','assets/door_open.png');
+    game.load.image('key','assets/keyYellow.png');    
 
     game.load.image('cloud1','assets/cloud1.png');    
     game.load.image('cloud2','assets/cloud2.png');    
@@ -31,10 +31,10 @@ var isJumping = false;
 var bg;
 
 //objects
-// var door_closed;
-// var door_open;
-// var key;
-// var hasKey;
+var door_closed;
+var door_open;
+var key;
+var hasKey;
 
 //text
 // var winText;
@@ -56,7 +56,7 @@ function create() {
     createBackground();
     createClouds();
     initializeTerrain();
-    // createObjects();
+    createObjects();
     createPlayer();
     // createTexts();
 }
@@ -151,18 +151,18 @@ function createPlayer() {
 // }
 
 
-// function createObjects() {
-//     door_closed = game.add.sprite(210, 1050, 'door_closed');
-//     door_open = game.add.sprite(210, 1050, 'door_open');
-//     door_open.visible = false;
+function createObjects() {
+    door_closed = game.add.sprite(210, 1050, 'door_closed');
+    door_open = game.add.sprite(210, 1050, 'door_open');
+    door_open.visible = false;
 
-//     key = game.add.sprite(5150, 150, 'key');
+    key = game.add.sprite(5150, 150, 'key');
 
-//     hasKey = game.add.sprite(10, 10, 'key');
-//     hasKey.fixedToCamera = true;
-//     hasKey.visible = false;
-//     hasKey.scale.setTo(0.5, 0.5);
-// }
+    hasKey = game.add.sprite(10, 10, 'key');
+    hasKey.fixedToCamera = true;
+    hasKey.visible = false;
+    hasKey.scale.setTo(0.5, 0.5);
+}
 
 function createBackground() {
 
@@ -198,18 +198,18 @@ function createClouds() {
     }
 }
 
-// function reset() {
-//     player.x = 320;
-//     player.y = 1000; 
+function reset() {
+    player.x = 320;
+    player.y = 1000; 
 
-//     door_closed.visible = true;
-//     door_open.visible = false;
-//     hasKey.visible = false;
-//     winText.visible = false;
-//     key.visible = true;
+    door_closed.visible = true;
+    door_open.visible = false;
+    hasKey.visible = false;
+    // winText.visible = false;
+    key.visible = true;
 
-//     startTime = game.time.now;
-// }
+    startTime = game.time.now;
+}
 
 function update() {
     // collision detection
@@ -220,20 +220,20 @@ function update() {
         clouds[i].cameraOffset.x = clouds[i].x1 - 50 * game.camera.x / game.width * clouds[i].parallax;
     }
 
-    // // object interactions
-    // if(game.physics.arcade.intersects(player, key) && key.visible === true) {
-    //     hasKey.visible = true;
-    //     key.visible = false;
-    // }
+    // object interactions
+    if(game.physics.arcade.intersects(player, key) && key.visible === true) {
+        hasKey.visible = true;
+        key.visible = false;
+    }
 
-    // if(game.physics.arcade.intersects(player, door_closed)) {
-    //     if(hasKey.visible === true) {
-    //         door_closed.visible = false;
-    //         door_open.visible = true;
-    //         hasKey.visible = false;
-    //         winText.visible = true;
-    //     }
-    // }
+    if(game.physics.arcade.intersects(player, door_closed)) {
+        if(hasKey.visible === true) {
+            door_closed.visible = false;
+            door_open.visible = true;
+            hasKey.visible = false;
+            // winText.visible = true;
+        }
+    }
 
     // player movement
 
@@ -309,9 +309,9 @@ function update() {
 
 
     // death
-    // if(player.body.y > 1400) { 
-    //     reset();
-    // }
+    if(player.body.y > 1400) { 
+        reset();
+    }
 
 }
 
