@@ -12,7 +12,7 @@ function preload() {
     game.load.image('cloud2','assets/cloud2.png');    
     game.load.image('cloud3','assets/cloud3.png');    
 
-    game.load.spritesheet('player_walk', 'assets/player/p1_walk/walk.png', 66, 92, 13);
+    game.load.spritesheet('player_walk', 'assets/walk.png', 66, 92, 13);
 }
 
 //IO
@@ -46,10 +46,7 @@ var clouds = [];
 
 
 function create() {
-
-    game.scale.fullScreenScaleMode = Phaser.ScaleManager.SHOW_ALL;
-    game.input.onDown.add(gofull, this);
-
+    setupFullscreen();
 
     initializePhysics();    
     initializeIO();
@@ -62,9 +59,13 @@ function create() {
     createTexts();
 }
 
+function setupFullscreen() {
+    game.scale.fullScreenScaleMode = Phaser.ScaleManager.SHOW_ALL;
+    game.input.onDown.add(gofull, this);
+}
+
 
 function gofull() {
-
     if (game.scale.isFullScreen)
     {
         game.scale.stopFullScreen();
@@ -73,7 +74,6 @@ function gofull() {
     {
         game.scale.startFullScreen(false);
     }
-
 }
 
 function initializePhysics() {
