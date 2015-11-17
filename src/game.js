@@ -46,6 +46,11 @@ var clouds = [];
 
 
 function create() {
+
+    game.scale.fullScreenScaleMode = Phaser.ScaleManager.SHOW_ALL;
+    game.input.onDown.add(gofull, this);
+
+
     initializePhysics();    
     initializeIO();
 
@@ -55,6 +60,20 @@ function create() {
     createObjects();
     createPlayer();
     createTexts();
+}
+
+
+function gofull() {
+
+    if (game.scale.isFullScreen)
+    {
+        game.scale.stopFullScreen();
+    }
+    else
+    {
+        game.scale.startFullScreen(false);
+    }
+
 }
 
 function initializePhysics() {
