@@ -15,48 +15,59 @@ function preload() {
     game.load.spritesheet('player_walk', 'assets/player/p1_walk/walk.png', 66, 92, 13);
 }
 
-var player;
-var facing = 'left';
-var jumpTimer = 0;
+//IO
 var cursors;
 var jumpButton;
+
+//player
+var player;
+var facing = 'right';
+var jumpTimer = 0;
+var isJumping = false;
+
+//background
 var bg;
 
-
+//objects
 var door_closed;
 var door_open;
 var key;
 var hasKey;
 
+//text
 var winText;
-
-var isJumping = false;
-
+var timerText;
 var startTime = 0;
 var best = 0;
 
-var timerText;
-
+//clouds
 var clouds = [];
 
+
+
 function create() {
-    game.physics.startSystem(Phaser.Physics.ARCADE);
+    initializePhysics();    
+    initializeIO();
 
     createBackground();
     createClouds();
+    initializeTerrain();
+    createObjects();
+    createPlayer();
+    createTexts();
+}
 
+function initializePhysics() {
+    game.physics.startSystem(Phaser.Physics.ARCADE);    
     game.physics.arcade.gravity.y = 1000;
+}
 
-    door_closed = game.add.sprite(210, 1050, 'door_closed');
-    door_open = game.add.sprite(210, 1050, 'door_open');
-    door_open.visible = false;
-
-    key = game.add.sprite(5150, 150, 'key');
-
+function initializeIO() {
     cursors = game.input.keyboard.createCursorKeys();
     jumpButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
-    
-    
+}
+
+function initializeTerrain() {
     map = game.add.tilemap('lvl1');
     map.addTilesetImage('base', 'base_tile_img' );
     map.setCollisionBetween(0, 200);
@@ -66,8 +77,10 @@ function create() {
 
     terrainLayer.resizeWorld();
     objectsLayer.resizeWorld();
+}
 
 
+function createPlayer() {
 
     player = game.add.sprite(340, 1000, 'player_walk');
     player.animations.add('walk', [2,3,4,5,6,7,8,9,10,11,12], 15, true);
@@ -83,12 +96,9 @@ function create() {
     
     game.camera.follow(player);
 
-    hasKey = game.add.sprite(10, 10, 'key');
-    hasKey.fixedToCamera = true;
-    hasKey.visible = false;
-    hasKey.scale.setTo(0.5, 0.5);
+}
 
-
+function createTexts() {
     winText = game.add.text(game.camera.width/2, game.camera.height/2 - 100, 'You Win!');
     winText.fixedToCamera = true;
 
@@ -108,7 +118,6 @@ function create() {
 
     winText.visible = false;
 
-
     timerText = game.add.text(game.camera.width - 20, 40, '0');
     timerText.fixedToCamera = true;
     timerText.anchor.set(1);
@@ -118,7 +127,20 @@ function create() {
     timerText.stroke = '#000000';
     timerText.strokeThickness = 2;
     timerText.fill = '#ffffff';
+}
 
+
+function createObjects() {
+    door_closed = game.add.sprite(210, 1050, 'door_closed');
+    door_open = game.add.sprite(210, 1050, 'door_open');
+    door_open.visible = false;
+
+    key = game.add.sprite(5150, 150, 'key');
+
+    hasKey = game.add.sprite(10, 10, 'key');
+    hasKey.fixedToCamera = true;
+    hasKey.visible = false;
+    hasKey.scale.setTo(0.5, 0.5);
 }
 
 function createBackground() {
@@ -133,7 +155,6 @@ function createBackground() {
 
     var bg = game.add.sprite(0, 0, bgBitmap);
     bg.fixedToCamera = true;
-
 }
 
 
@@ -170,12 +191,15 @@ function reset() {
 }
 
 function update() {
+    // collision detection
     game.physics.arcade.collide(player, terrainLayer);
     
+    // cloud parallax
     for(var i=0; i<clouds.length; i++){
         clouds[i].cameraOffset.x = clouds[i].x1 - 50 * game.camera.x / game.width * clouds[i].parallax;
     }
 
+    // object interactions
     if(game.physics.arcade.intersects(player, key) && key.visible === true) {
         hasKey.visible = true;
         key.visible = false;
@@ -190,13 +214,23 @@ function update() {
         }
     }
 
+    // player movement
+
+    //slide
+    if(player.body.velocity.x > 7 && player.body.velocity.x < 7) {
+        player.body.velocity.x = 0;
+    }
 
     if(player.body.velocity.x < 0) {
         player.body.velocity.x += 7;
-    } else {
+    } else if(player.body.velocity.x != 0) {
         player.body.velocity.x -= 7;
     }
 
+    //bounce 
+    //player.body.bounce.set(0.2);
+
+    //regular movement
     if (cursors.left.isDown)
     {
         player.body.velocity.x = -250;
@@ -253,12 +287,11 @@ function update() {
     }
 
 
+    // death
     if(player.body.y > 1400) { 
         reset();
     }
 
-
-    //game.camera.x = player.body.x;
 }
 
 function render() {
@@ -266,6 +299,8 @@ function render() {
         var timePassed = game.time.now - startTime;
         timerText.text = msToTime(timePassed);
     }
+
+    //game.debug.spriteInfo(player, 32, 32);
 }
 
 
